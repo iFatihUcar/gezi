@@ -1,0 +1,46 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.approval-card {
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.btn-approval {
+    width: 150px;
+}
+
+.copy-btn {
+    cursor: pointer;
+}
+
+.badge-approved {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-rejected {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-pending {
+    background-color: #ffc107;
+    color: black;
+}
