@@ -60,24 +60,24 @@
     
     <!--- Teacher Dashboard --->
     <cfcase value="dashboard">
-        <cfset teacherController = CreateObject("component", "controllers.teacher")>
+        <cfset teacherController = CreateObject("component", "controllers.teacher").init()>
         <cfset teacherController.dashboard()>
     </cfcase>
     
     <!--- Trips --->
     <cfcase value="listTrips">
         <cfparam name="url.status" default="ACTIVE">
-        <cfset tripController = CreateObject("component", "controllers.trip")>
+        <cfset tripController = CreateObject("component", "controllers.trip").init()>
         <cfset tripController.listTrips(status=url.status)>
     </cfcase>
     
     <cfcase value="newTripForm">
-        <cfset tripController = CreateObject("component", "controllers.trip")>
+        <cfset tripController = CreateObject("component", "controllers.trip").init()>
         <cfset tripController.newTripForm()>
     </cfcase>
     
     <cfcase value="addTrip">
-        <cfset tripController = CreateObject("component", "controllers.trip")>
+        <cfset tripController = CreateObject("component", "controllers.trip").init()>
         <cfset tripController.addTrip(
             TRIP_NAME = form.TRIP_NAME,
             TRIP_DESCRIPTION = form.TRIP_DESCRIPTION,
@@ -89,12 +89,12 @@
     
     <cfcase value="editTripForm">
         <cfparam name="url.TRIP_ID" default="0">
-        <cfset tripController = CreateObject("component", "controllers.trip")>
+        <cfset tripController = CreateObject("component", "controllers.trip").init()>
         <cfset tripController.editTripForm(TRIP_ID=url.TRIP_ID)>
     </cfcase>
     
     <cfcase value="updateTrip">
-        <cfset tripController = CreateObject("component", "controllers.trip")>
+        <cfset tripController = CreateObject("component", "controllers.trip").init()>
         <cfset tripController.updateTrip(
             TRIP_ID = form.TRIP_ID,
             TRIP_NAME = form.TRIP_NAME,
@@ -108,24 +108,24 @@
     
     <cfcase value="deleteTrip">
         <cfparam name="url.TRIP_ID" default="0">
-        <cfset tripController = CreateObject("component", "controllers.trip")>
+        <cfset tripController = CreateObject("component", "controllers.trip").init()>
         <cfset tripController.deleteTrip(TRIP_ID=url.TRIP_ID)>
     </cfcase>
     
     <!--- Students --->
     <cfcase value="listStudents">
         <cfparam name="url.status" default="ACTIVE">
-        <cfset studentController = CreateObject("component", "controllers.student")>
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
         <cfset studentController.listStudents(status=url.status)>
     </cfcase>
     
     <cfcase value="newStudentForm">
-        <cfset studentController = CreateObject("component", "controllers.student")>
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
         <cfset studentController.newStudentForm()>
     </cfcase>
     
     <cfcase value="addStudent">
-        <cfset studentController = CreateObject("component", "controllers.student")>
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
         <cfset studentController.addStudent(
             STUDENT_NAME = form.STUDENT_NAME,
             STUDENT_SURNAME = form.STUDENT_SURNAME,
@@ -135,15 +135,35 @@
             PARENT_EMAIL = form.PARENT_EMAIL
         )>
     </cfcase>
-    
+
+    <cfcase value="editStudentForm">
+        <cfparam name="url.STUDENT_ID" default="0">
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
+        <cfset studentController.editStudentForm(STUDENT_ID=url.STUDENT_ID)>
+    </cfcase>
+
+    <cfcase value="updateStudent">
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
+        <cfset studentController.updateStudent(
+            STUDENT_ID = form.STUDENT_ID,
+            STUDENT_NAME = form.STUDENT_NAME,
+            STUDENT_SURNAME = form.STUDENT_SURNAME,
+            STUDENT_CLASS = form.STUDENT_CLASS,
+            PARENT_NAME = form.PARENT_NAME,
+            PARENT_PHONE = form.PARENT_PHONE,
+            PARENT_EMAIL = form.PARENT_EMAIL,
+            STUDENT_STATUS = form.STUDENT_STATUS
+        )>
+    </cfcase>
+        
     <cfcase value="assignStudentsForm">
         <cfparam name="url.TRIP_ID" default="0">
-        <cfset studentController = CreateObject("component", "controllers.student")>
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
         <cfset studentController.assignStudentsForm(TRIP_ID=url.TRIP_ID)>
     </cfcase>
     
     <cfcase value="assignStudents">
-        <cfset studentController = CreateObject("component", "controllers.student")>
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
         <cfset studentController.assignStudents(
             TRIP_ID = form.TRIP_ID,
             STUDENT_IDS = IsDefined("form.STUDENT_IDS") ? form.STUDENT_IDS : ""
@@ -153,7 +173,7 @@
     <cfcase value="removeStudentFromTrip">
         <cfparam name="url.TRIP_ID" default="0">
         <cfparam name="url.STUDENT_ID" default="0">
-        <cfset studentController = CreateObject("component", "controllers.student")>
+        <cfset studentController = CreateObject("component", "controllers.student").init()>
         <cfset studentController.removeStudentFromTrip(
             TRIP_ID = url.TRIP_ID,
             STUDENT_ID = url.STUDENT_ID
@@ -163,14 +183,14 @@
     <!--- Approval Links --->
     <cfcase value="showApprovalLinks">
         <cfparam name="url.TRIP_ID" default="0">
-        <cfset teacherController = CreateObject("component", "controllers.teacher")>
+        <cfset teacherController = CreateObject("component", "controllers.teacher").init()>
         <cfset teacherController.showApprovalLinks(TRIP_ID=url.TRIP_ID)>
     </cfcase>
     
     <cfcase value="refreshApprovalLink">
         <cfparam name="url.TRIP_ID" default="0">
         <cfparam name="url.STUDENT_ID" default="0">
-        <cfset teacherController = CreateObject("component", "controllers.teacher")>
+        <cfset teacherController = CreateObject("component", "controllers.teacher").init()>
         <cfset teacherController.refreshApprovalLink(
             TRIP_ID = url.TRIP_ID,
             STUDENT_ID = url.STUDENT_ID

@@ -22,9 +22,6 @@ main {
     overflow-x: auto;
 }
 
-.btn-approval {
-    width: 150px;
-}
 
 .copy-btn {
     cursor: pointer;

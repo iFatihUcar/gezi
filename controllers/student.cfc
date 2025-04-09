@@ -78,6 +78,72 @@
             <cfinclude template="../views/students/add.cfm">
         </cfif>
     </cffunction>
+
+    <!--- Öğrenci düzenleme formu --->
+    <cffunction name="editStudentForm" access="public" returntype="void">
+        <cfargument name="STUDENT_ID" type="numeric" required="true">
+        
+        <cfset request.student = variables.studentModel.getStudentById(STUDENT_ID=arguments.STUDENT_ID)>
+        
+        <cfif request.student.RecordCount GT 0>
+            <cfinclude template="../views/students/edit.cfm">
+        <cfelse>
+            <cflocation url="index.cfm?action=listStudents" addtoken="false">
+        </cfif>
+    </cffunction>
+
+    <!--- Öğrenci bilgilerini güncelleme --->
+<cffunction name="updateStudent" access="public" returntype="void">
+    <cfargument name="STUDENT_ID" type="numeric" required="true">
+    <cfargument name="STUDENT_NAME" type="string" required="true">
+    <cfargument name="STUDENT_SURNAME" type="string" required="true">
+    <cfargument name="STUDENT_CLASS" type="string" required="true">
+    <cfargument name="PARENT_NAME" type="string" required="true">
+    <cfargument name="PARENT_PHONE" type="string" required="true">
+    <cfargument name="PARENT_EMAIL" type="string" required="false" default="">
+    <cfargument name="STUDENT_STATUS" type="string" required="false" default="ACTIVE">
+    
+    <cfset var errors = []>
+    
+    <cfif Trim(arguments.STUDENT_NAME) EQ "">
+        <cfset ArrayAppend(errors, "Öğrenci adı boş olamaz.")>
+    </cfif>
+    <cfif Trim(arguments.STUDENT_SURNAME) EQ "">
+        <cfset ArrayAppend(errors, "Öğrenci soyadı boş olamaz.")>
+    </cfif>
+    <cfif Trim(arguments.STUDENT_CLASS) EQ "">
+        <cfset ArrayAppend(errors, "Öğrenci sınıfı boş olamaz.")>
+    </cfif>
+    <cfif Trim(arguments.PARENT_NAME) EQ "">
+        <cfset ArrayAppend(errors, "Veli adı boş olamaz.")>
+    </cfif>
+    <cfif Trim(arguments.PARENT_PHONE) EQ "">
+        <cfset ArrayAppend(errors, "Veli telefonu boş olamaz.")>
+    </cfif>
+    
+    <cfif ArrayLen(errors) GT 0>
+        <cfset request.errors = errors>
+        <cfset request.formData = arguments>
+        <cfset request.student = arguments>
+        <cfinclude template="../views/students/edit.cfm">
+        <cfreturn>
+    </cfif>
+    
+    <cfset var success = variables.studentModel.updateStudent(
+        STUDENT_ID = arguments.STUDENT_ID,
+        STUDENT_NAME = arguments.STUDENT_NAME,
+        STUDENT_SURNAME = arguments.STUDENT_SURNAME,
+        STUDENT_CLASS = arguments.STUDENT_CLASS,
+        PARENT_NAME = arguments.PARENT_NAME,
+        PARENT_PHONE = arguments.PARENT_PHONE,
+        PARENT_EMAIL = arguments.PARENT_EMAIL,
+        STUDENT_STATUS = arguments.STUDENT_STATUS
+    )>
+    
+        <cflocation url="index.cfm?action=listStudents" addtoken="false">
+    </cffunction>
+
+
     
     <!--- Öğrencileri geziye atama formu --->
     <cffunction name="assignStudentsForm" access="public" returntype="void">

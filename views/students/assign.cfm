@@ -30,7 +30,8 @@
                     </tr>
                     <tr>
                         <th>Gezi Ücreti:</th>
-                        <td>#NumberFormat(request.trip.TRIP_COST, ",.##")# TL</td>
+                        <td>#LSNumberFormat(Val(request.trip.TRIP_COST))# TL</td>
+
                     </tr>
                     <tr>
                         <th>Atanmış Öğrenci Sayısı:</th>

@@ -11,7 +11,7 @@
         
         <cftry>
             <!--- Önce bu öğrenci için bu geziye dair bir onay kaydı var mı kontrol edelim --->
-            <cfquery name="checkApproval" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#">
+            <cfquery name="checkApproval" datasource="DEV_DB_MSSQL">
                 SELECT APPROVAL_ID
                 FROM TRIP_APPROVALS
                 WHERE 
@@ -21,7 +21,7 @@
             
             <cfif checkApproval.RecordCount GT 0>
                 <!--- Mevcut onayı güncelle --->
-                <cfquery name="updateApproval" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#">
+                <cfquery name="updateApproval" datasource="DEV_DB_MSSQL">
                     UPDATE TRIP_APPROVALS
                     SET
                         APPROVAL_STATUS = <cfqueryparam value="#arguments.APPROVAL_STATUS#" cfsqltype="CF_SQL_VARCHAR">,
@@ -33,7 +33,7 @@
                 </cfquery>
             <cfelse>
                 <!--- Yeni onay kaydı oluştur --->
-                <cfquery name="insertApproval" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#">
+                <cfquery name="insertApproval" datasource="DEV_DB_MSSQL">
                     INSERT INTO TRIP_APPROVALS (
                         TRIP_ID,
                         STUDENT_ID,
@@ -59,6 +59,48 @@
             </cfcatch>
         </cftry>
     </cffunction>
+
+    <!--- Token ile onay bilgisini getirme --->
+    <cffunction name="getApprovalByToken" access="public" returntype="query">
+        <cfargument name="token" type="string" required="true">
+
+        <cfquery name="qApproval" datasource="DEV_DB_MSSQL">
+            SELECT 
+                T.TRIP_ID,
+                T.TRIP_NAME,
+                T.TRIP_DATE,
+                T.TRIP_LOCATION,
+                T.TRIP_COST,
+                S.STUDENT_ID,
+                S.STUDENT_NAME,
+                S.STUDENT_SURNAME,
+                S.STUDENT_CLASS,
+                S.PARENT_NAME,
+                S.PARENT_PHONE,
+                S.PARENT_EMAIL,
+                TA.APPROVAL_ID,
+                TA.APPROVAL_STATUS,
+                TA.APPROVAL_DATE,
+                TK.TOKEN,
+                TK.EXPIRE_DATE
+            FROM 
+                APPROVAL_TOKENS TK
+            INNER JOIN 
+                TRIPS T ON TK.TRIP_ID = T.TRIP_ID
+            INNER JOIN 
+                STUDENTS S ON TK.STUDENT_ID = S.STUDENT_ID
+            LEFT JOIN 
+                TRIP_APPROVALS TA ON TK.TRIP_ID = TA.TRIP_ID AND TK.STUDENT_ID = TA.STUDENT_ID
+            WHERE 
+                TK.TOKEN = <cfqueryparam value="#arguments.token#" cfsqltype="CF_SQL_VARCHAR">
+                AND TK.EXPIRE_DATE >= <cfqueryparam value="#Now()#" cfsqltype="CF_SQL_TIMESTAMP">
+                AND T.TRIP_STATUS = 'ACTIVE'
+                AND S.STUDENT_STATUS = 'ACTIVE'
+        </cfquery>
+
+        <cfreturn qApproval>
+    </cffunction>
+
     
     <!--- Belirli bir geziyi getirme (Onay linki için) --->
     <cffunction name="getTripInfoByToken" access="public" returntype="query">
@@ -66,7 +108,7 @@
         
         
         
-        <cfquery name="qTripInfo" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#">
+        <cfquery name="qTripInfo" datasource="DEV_DB_MSSQL">
             SELECT 
                 T.TRIP_ID,
                 T.TRIP_NAME,
@@ -111,7 +153,7 @@
         
         
         
-        <cfquery name="qApprovalStats" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#">
+        <cfquery name="qApprovalStats" datasource="DEV_DB_MSSQL">
             SELECT 
                 COUNT(TS.STUDENT_ID) AS TOTAL_STUDENTS,
                 COUNT(TA.APPROVAL_ID) AS TOTAL_RESPONSES,
@@ -139,4 +181,6 @@
         
         <cfreturn approvalStats>
     </cffunction>
+
+
 </cfcomponent>

@@ -1,5 +1,11 @@
 <cfcomponent output="false">
     <!--- Gezi oluşturma --->
+    <cffunction name="init" access="public" returntype="any">
+        <cfset variables.dbName = "DEV_DB_MSSQL">
+        <cfset variables.dbUser = "">
+        <cfset variables.dbPassword = "">
+        <cfreturn this>
+    </cffunction>
     <cffunction name="createTrip" access="public" returntype="numeric">
         <cfargument name="TRIP_NAME" type="string" required="true">
         <cfargument name="TRIP_DESCRIPTION" type="string" required="true">
@@ -14,30 +20,31 @@
         
         
         <cftransaction>
-            <cfquery name="insertTrip" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#" result="tripResult">
-                INSERT INTO TRIPS (
-                    TRIP_NAME,
-                    TRIP_DESCRIPTION,
-                    TRIP_DATE,
-                    TRIP_LOCATION,
-                    TRIP_COST,
-                    TRIP_STATUS,
-                    CREATED_BY,
-                    CREATED_DATE
-                ) VALUES (
-                    <cfqueryparam value="#arguments.TRIP_NAME#" cfsqltype="CF_SQL_VARCHAR">,
-                    <cfqueryparam value="#arguments.TRIP_DESCRIPTION#" cfsqltype="CF_SQL_VARCHAR">,
-                    <cfqueryparam value="#arguments.TRIP_DATE#" cfsqltype="CF_SQL_DATE">,
-                    <cfqueryparam value="#arguments.TRIP_LOCATION#" cfsqltype="CF_SQL_VARCHAR">,
-                    <cfqueryparam value="#arguments.TRIP_COST#" cfsqltype="CF_SQL_NUMERIC">,
-                    <cfqueryparam value="#arguments.TRIP_STATUS#" cfsqltype="CF_SQL_VARCHAR">,
-                    <cfqueryparam value="#arguments.CREATED_BY#" cfsqltype="CF_SQL_INTEGER">,
-                    <cfqueryparam value="#Now()#" cfsqltype="CF_SQL_TIMESTAMP">
-                )
-            </cfquery>
-            
-            <cfset tripID = tripResult.IDENTITYCOL>
-        </cftransaction>
+    <cfquery name="insertTrip" datasource="DEV_DB_MSSQL" result="tripResult">
+        INSERT INTO TRIPS (
+            TRIP_NAME,
+            TRIP_DESCRIPTION,
+            TRIP_DATE,
+            TRIP_LOCATION,
+            TRIP_COST,
+            TRIP_STATUS,
+            CREATED_BY,
+            CREATED_DATE
+        ) VALUES (
+            <cfqueryparam value="#arguments.TRIP_NAME#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#arguments.TRIP_DESCRIPTION#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#arguments.TRIP_DATE#" cfsqltype="CF_SQL_DATE">,
+            <cfqueryparam value="#arguments.TRIP_LOCATION#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#arguments.TRIP_COST#" cfsqltype="CF_SQL_NUMERIC">,
+            <cfqueryparam value="#arguments.TRIP_STATUS#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#arguments.CREATED_BY#" cfsqltype="CF_SQL_INTEGER">,
+            <cfqueryparam value="#Now()#" cfsqltype="CF_SQL_TIMESTAMP">
+        )
+    </cfquery>
+    
+    <cfset tripID = tripResult.IDENTITYCOL>
+</cftransaction>
+
         
         <cfreturn tripID>
     </cffunction>
@@ -52,7 +59,7 @@
             SELECT 
                 T.TRIP_ID,
                 T.TRIP_NAME,
-                T.TRIP_DESCRIPTION,
+                CAST(T.TRIP_DESCRIPTION AS VARCHAR(8000)) AS TRIP_DESCRIPTION,
                 T.TRIP_DATE,
                 T.TRIP_LOCATION,
                 T.TRIP_COST,
@@ -64,12 +71,12 @@
                 TRIPS T
             LEFT JOIN 
                 TRIP_STUDENTS TS ON T.TRIP_ID = TS.TRIP_ID
-            WHERE 
+             
                 <cfif arguments.status NEQ "ALL">
-                    T.TRIP_STATUS = <cfqueryparam value="#arguments.status#" cfsqltype="CF_SQL_VARCHAR">
+                    WHERE T.TRIP_STATUS = <cfqueryparam value="#arguments.status#" cfsqltype="CF_SQL_VARCHAR">
                 </cfif>
             GROUP BY 
-                T.TRIP_ID, T.TRIP_NAME, T.TRIP_DESCRIPTION, T.TRIP_DATE, 
+                T.TRIP_ID, T.TRIP_NAME, CAST(T.TRIP_DESCRIPTION AS VARCHAR(8000)), T.TRIP_DATE, 
                 T.TRIP_LOCATION, T.TRIP_COST, T.TRIP_STATUS, T.CREATED_BY, T.CREATED_DATE
             ORDER BY 
                 T.TRIP_DATE DESC

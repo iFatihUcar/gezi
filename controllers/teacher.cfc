@@ -19,8 +19,9 @@
         <cfargument name="TRIP_ID" type="numeric" required="true">
         
         <cfset var userID = session.userID> <!--- Kullanıcı kimliğini session'dan alıyoruz --->
-        <cfset var baseURL = "https://yourdomain.com/approval/form.cfm"> <!--- Onay sayfasının URL'i --->
-        
+        <!-- BU DOĞRU -->
+        <cfset var baseURL = "https://fucar-dev.gramoni.dev/gezi_onay_sistemi/views/approval/form.cfm">
+
         <cfset request.trip = variables.tripModel.getTripById(TRIP_ID=arguments.TRIP_ID)>
         <cfset request.tripStudents = variables.studentModel.getStudentsByTrip(TRIP_ID=arguments.TRIP_ID)>
         <cfset request.approvalStats = variables.approvalModel.getTripApprovalStats(TRIP_ID=arguments.TRIP_ID)>

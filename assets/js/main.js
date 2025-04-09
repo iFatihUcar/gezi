@@ -1,11 +1,15 @@
 // Onay linkini kopyalama fonksiyonu
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        alert('Link kopyalandı!');
-    }, function(err) {
-        console.error('Link kopyalanamadı: ', err);
-    });
-}
+$(document).ready(function () {
+    window.copyToClipboard = function (text) {
+        const tempInput = document.createElement("input");
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // mobil uyumlu
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+    };
+});
 
 // Öğrenci seçim checkbox'larını kontrol etme
 document.addEventListener('DOMContentLoaded', function() {

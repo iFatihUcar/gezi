@@ -15,7 +15,7 @@
         
         
         <cftransaction>
-            <cfquery name="insertStudent" datasource="#variables.dbName#" username="#variables.dbUser#" password="#variables.dbPassword#" result="studentResult">
+            <cfquery name="insertStudent" datasource="DEV_DB_MSSQL" result="studentResult">
                 INSERT INTO STUDENTS (
                     STUDENT_NAME,
                     STUDENT_SURNAME,
@@ -65,9 +65,8 @@
                 CREATED_DATE
             FROM 
                 STUDENTS
-            WHERE 
                 <cfif arguments.status NEQ "ALL">
-                    STUDENT_STATUS = <cfqueryparam value="#arguments.status#" cfsqltype="CF_SQL_VARCHAR">
+                    WHERE STUDENT_STATUS = <cfqueryparam value="#arguments.status#" cfsqltype="CF_SQL_VARCHAR">
                 </cfif>
             ORDER BY 
                 STUDENT_CLASS, STUDENT_SURNAME, STUDENT_NAME
@@ -102,6 +101,40 @@
         
         <cfreturn qStudent>
     </cffunction>
+
+    <!--- Öğrenci bilgilerini güncelleme --->
+    <cffunction name="updateStudent" access="public" returntype="boolean">
+        <cfargument name="STUDENT_ID" type="numeric" required="true">
+        <cfargument name="STUDENT_NAME" type="string" required="true">
+        <cfargument name="STUDENT_SURNAME" type="string" required="true">
+        <cfargument name="STUDENT_CLASS" type="string" required="true">
+        <cfargument name="PARENT_NAME" type="string" required="true">
+        <cfargument name="PARENT_PHONE" type="string" required="true">
+        <cfargument name="PARENT_EMAIL" type="string" required="false" default="">
+        <cfargument name="STUDENT_STATUS" type="string" required="false" default="ACTIVE">
+
+        <cftry>
+            <cfquery datasource="DEV_DB_MSSQL">
+                UPDATE STUDENTS
+                SET
+                    STUDENT_NAME = <cfqueryparam value="#arguments.STUDENT_NAME#" cfsqltype="CF_SQL_VARCHAR">,
+                    STUDENT_SURNAME = <cfqueryparam value="#arguments.STUDENT_SURNAME#" cfsqltype="CF_SQL_VARCHAR">,
+                    STUDENT_CLASS = <cfqueryparam value="#arguments.STUDENT_CLASS#" cfsqltype="CF_SQL_VARCHAR">,
+                    PARENT_NAME = <cfqueryparam value="#arguments.PARENT_NAME#" cfsqltype="CF_SQL_VARCHAR">,
+                    PARENT_PHONE = <cfqueryparam value="#arguments.PARENT_PHONE#" cfsqltype="CF_SQL_VARCHAR">,
+                    PARENT_EMAIL = <cfqueryparam value="#arguments.PARENT_EMAIL#" cfsqltype="CF_SQL_VARCHAR">,
+                    STUDENT_STATUS = <cfqueryparam value="#arguments.STUDENT_STATUS#" cfsqltype="CF_SQL_VARCHAR">
+                WHERE
+                    STUDENT_ID = <cfqueryparam value="#arguments.STUDENT_ID#" cfsqltype="CF_SQL_INTEGER">
+            </cfquery>
+
+            <cfreturn true>
+            <cfcatch type="any">
+                <cfreturn false>
+            </cfcatch>
+        </cftry>
+    </cffunction>
+
     
     <!--- Öğrenciyi geziye ekleme --->
     <cffunction name="assignStudentToTrip" access="public" returntype="boolean">

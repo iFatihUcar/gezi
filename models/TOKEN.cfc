@@ -81,7 +81,7 @@
         <cfargument name="STUDENT_ID" type="numeric" required="true">
         <cfargument name="CREATED_BY" type="numeric" required="true">
         <cfargument name="EXPIRE_DAYS" type="numeric" required="false" default="30">
-        <cfargument name="BASE_URL" type="string" required="false" default="https://yourdomain.com/approval/form.cfm">
+        <cfargument name="BASE_URL" type="string" required="false" default="/gezi_onay_sistemi/views/approval/form.cfm">
         
         <cfset var token = createToken(
             TRIP_ID = arguments.TRIP_ID,
